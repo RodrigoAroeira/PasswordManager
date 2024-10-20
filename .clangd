@@ -1,0 +1,4 @@
+CompileFlags:
+  Add:
+    - -I/home/rodrigo/Dev/PasswordManager/headers
+    - -I/home/rodrigo/Dev/PasswordManager/includes/usr/include
