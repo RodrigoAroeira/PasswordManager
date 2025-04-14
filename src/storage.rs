@@ -11,18 +11,13 @@ pub struct PasswordDatabase {
 
 impl PasswordDatabase {
     pub fn new(path: &str) -> Self {
-        let entries = match fs::read_to_string(path) {
-            Ok(data) => match serde_json::from_str::<PasswordDatabase>(&data) {
-                Ok(db) => db.entries,
-                Err(_) => serde_json::from_str(&data).unwrap_or(vec![]),
-            },
-            Err(_) => vec![],
-        };
-
-        Self {
-            path: path.to_string(),
-            entries,
-        }
+        fs::read_to_string(path)
+            .ok()
+            .and_then(|data| serde_json::from_str::<PasswordDatabase>(&data).ok())
+            .unwrap_or(Self {
+                path: path.to_string(),
+                entries: vec![],
+            })
     }
 
     pub fn add(&mut self, entry: PasswordEntry) {
