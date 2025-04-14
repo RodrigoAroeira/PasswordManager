@@ -4,47 +4,21 @@
 mod cli;
 mod models;
 mod storage;
+mod utils;
 
 use clap::Parser;
-use cli::{Cli, Commands};
-use std::error::Error;
+use cli::Cli;
+use utils::{cli_parse, interactive_mode};
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
-    let mut db = storage::PasswordDatabase::new("passwords.json");
+    let path = "passwords.json";
 
-    match args.command {
-        Commands::Add {
-            service,
-            username,
-            password,
-        } => {
-            db.add(models::PasswordEntry {
-                service,
-                username,
-                password,
-            });
-            if db.save().is_ok() {
-                println!("Password saved!");
-            }
-        }
-        Commands::Get { service } => {
-            if let Some(entry) = db.get(&service) {
-                println!("Username: {}", entry.username);
-                println!("Password: {}", entry.password);
-            } else {
-                println!("Service not found.");
-            }
-        }
-        Commands::List => {
-            if db.entries().is_empty() {
-                return Err("There are no entries in the database".into());
-            }
-            println!("Saved services:");
-            for entry in db.entries() {
-                println!("- {}", entry.service);
-            }
-        }
+    let mut db = storage::PasswordDatabase::new(path);
+
+    if args.interactive {
+        return interactive_mode(&mut db);
     }
-    Ok(())
+
+    cli_parse(&mut db, args)
 }
