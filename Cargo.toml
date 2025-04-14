@@ -1,0 +1,24 @@
+[package]
+name = "password-manager"
+version = "0.1.0"
+edition = "2024"
+description = "Local password manager with planned security features"
+authors = ["Rodrigo Aroeira"]
+license = "MIT"
+repository = "https://github.com/RodrigoAroeira/PasswordManager"
+readme = "README.md"
+
+[dependencies]
+anyhow = "1.0.97"
+clap = { version = "4.5.36", features = ["derive"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+
+[dev-dependencies]
+tempfile = "3.19.1"
+
+
+[profile.release]
+lto = true        # Link-time optimization for release builds
+codegen-units = 1 # Better optimization
+panic = "abort"   # Smaller binaries
