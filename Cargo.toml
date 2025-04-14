@@ -1,6 +1,6 @@
 [package]
 name = "password-manager"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 description = "Local password manager with planned security features"
 authors = ["Rodrigo Aroeira"]
@@ -20,6 +20,7 @@ tempfile = "3.19.1"
 
 
 [profile.release]
-lto = true        # Link-time optimization for release builds
-codegen-units = 1 # Better optimization
-panic = "abort"   # Smaller binaries
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
