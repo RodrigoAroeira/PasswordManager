@@ -1,6 +1,6 @@
 use crate::models::PasswordEntry;
 use serde::{Deserialize, Serialize};
-use std::fs;
+use std::{fs, path::Path};
 
 #[derive(Serialize, Deserialize)]
 pub struct PasswordDatabase {
@@ -29,6 +29,12 @@ impl PasswordDatabase {
     }
 
     pub fn save(&self) -> anyhow::Result<()> {
+        let path = Path::new(&self.path);
+        if let Some(parent) = path.parent() {
+            if !parent.exists() {
+                fs::create_dir_all(parent)?;
+            }
+        }
         let contents = serde_json::to_string_pretty(&self)?;
         fs::write(&self.path, &contents)?;
         Ok(())
